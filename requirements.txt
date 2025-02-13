@@ -1,6 +1,6 @@
-Pillow
 pandas
+Pillow
 streamlit
 python-multipart
 numpy
-io
+requests
