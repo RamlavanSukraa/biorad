@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 from datetime import datetime
+import requests
 
 # Function to display the app
 def display_app():
