@@ -46,7 +46,19 @@ def display_app():
     biorad_df = pd.DataFrame(biorad_data)
 
     # Load the graph image (chromatogram)
-    chromatogram_image = Image.open(r"C:\Users\Admin\Desktop\chromatogram\chromatogram.png")  # Update the path
+    # chromatogram_image = Image.open(r"C:\Users\Admin\Desktop\chromatogram\chromatogram.png")  # Update the path
+
+    # GitHub raw URL for the image
+    github_raw_url = "https://raw.githubusercontent.com/RamlavanSukraa/biorad/main/chromatogram.png"
+    
+    # Fetch the image from GitHub
+    response = requests.get(github_raw_url)
+    if response.status_code == 200:
+        chromatogram_image = Image.open(BytesIO(response.content))
+    else:
+        chromatogram_image = None  # Handle the case where the image isn't found
+
+
 
     # Date Filter Layout in the main screen
     st.subheader("Filter Data by Date")
@@ -96,7 +108,11 @@ def display_app():
 
     with col3:
         st.subheader("Chromatogram")
-        st.image(chromatogram_image, caption="Chromatogram Graph", use_column_width=True)
+        if chromatogram_image:
+            st.image(chromatogram_image, caption="Chromatogram Graph", use_column_width=True)
+        else:
+            st.error("Error: Unable to load chromatogram image.")
+
 
 # Main function to run the app
 if __name__ == "__main__":
