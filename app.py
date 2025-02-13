@@ -111,7 +111,7 @@ def display_app():
     with col3:
         st.subheader("Chromatogram")
         if chromatogram_image:
-            st.image(chromatogram_image, caption="Chromatogram Graph", use_column_width=True)
+            st.image(chromatogram_image, caption="Chromatogram Graph", use_container_width=True)
         else:
             st.error("Error: Unable to load chromatogram image.")
 
