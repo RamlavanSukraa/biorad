@@ -3,6 +3,7 @@
 import streamlit as st
 from utils.pdf_extractor import extract_text_from_pdf, extract_images_from_pdf, extract_table_from_text
 from utils.utils import save_figure
+from sql_queries.save_table_to_db import save_table_to_db
 import os
 from config import read_config
 from utils.logger import app_logger as logger
@@ -11,6 +12,7 @@ from utils.logger import app_logger as logger
 config = read_config()
 UPLOAD_DIR = config["paths"]["upload_dir"]
 IMAGE_DIR = config["paths"]["image_dir"]
+TABLE_NAME = config["database"]['table_name']
 
 st.title("📄 PDF Processor: Extract Images & Data")
 
@@ -42,8 +44,21 @@ if uploaded_file:
         # Extract text and table
         text = extract_text_from_pdf(pdf_path)
         df = extract_table_from_text(text)
+        table_saved = False
+
+
         if df is not None:
+            
             logger.info("Table extracted successfully.")
+            table_saved = save_table_to_db(df, table_name=TABLE_NAME)
+
+            if table_saved:
+                logger.info("Data saved to the Database")
+                
+            else:
+                logger.error("Data not saved to Database")
+                
+
         else:
             logger.warning("No tabular data detected in the PDF.")
 
@@ -54,6 +69,12 @@ if uploaded_file:
             st.subheader("📊 Extracted Table Data")
             if df is not None:
                 st.dataframe(df)
+
+                if table_saved:
+                    st.success("Data saved to the database")
+                else:
+                    st.error("⚠ Table data was extracted but could not be saved to the database.")
+
             else:
                 st.warning("⚠ No tabular data detected.")
 
@@ -67,3 +88,4 @@ if uploaded_file:
     except Exception as e:
         logger.error(f"Error processing PDF: {e}")
         st.error(f"An error occurred: {e}")
+
