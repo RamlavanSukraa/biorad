@@ -1,0 +1,15 @@
+poppler-utils
+layoutparser
+torchvision
+git+https://github.com/facebookresearch/detectron2.git@v0.5
+layoutparser[paddledetection]
+layoutparser[ocr]
+Pillow==9.5.0
+PyMuPDF
+pandas
+opencv-python
+matplotlib
+layoutparser[ocr] 
+pillow 
+pymupdf
+cython
