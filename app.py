@@ -21,11 +21,13 @@ uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
 if uploaded_file:
     try:
+
         # Save uploaded file
         pdf_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
         with open(pdf_path, "wb") as f:
             f.write(uploaded_file.read())
         logger.info(f"PDF file saved: {pdf_path}")
+
 
         # Extract first page image
         image_path = extract_images_from_pdf(pdf_path)
@@ -43,7 +45,7 @@ if uploaded_file:
 
         # Extract text and table
         text = extract_text_from_pdf(pdf_path)
-        df = extract_table_from_text(text)
+        df, sample_id, report_generated = extract_table_from_text(text)
         table_saved = False
 
 
@@ -65,8 +67,10 @@ if uploaded_file:
         # Layout for Table (Left) & Image (Right)
         col1, col2 = st.columns([1, 1])
 
-        with col1:  # Left: Table
-            st.subheader("📊 Extracted Table Data")
+        with col1:  # Left: Table  
+            st.subheader("Sample Details")
+            st.write(f"**Sample ID:** {sample_id}")
+            st.write(f"**Report Generated:** {report_generated}")
             if df is not None:
                 st.dataframe(df)
 
