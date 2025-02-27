@@ -49,6 +49,7 @@ def extract_table_from_text(text):
         sample_id = "Not found"
         logger.warning("Sample ID not found.")
 
+
     # Extract Report Generated Date
     report_generated_match = re.search(r"Report\s*Generated\s*:\s*([\d/]+\s*[\d:]+)", text)
     if report_generated_match:
@@ -57,6 +58,8 @@ def extract_table_from_text(text):
     else:
         report_generated = "Not found"
         logger.warning("Report Generated Date not found.")
+
+
 
     # Extract Table Data Using Regex
     pattern = re.compile(r"(A1a|A1b|LA1c|A1c|P3|P4|Ao)\s+(---|\d+\.\d+)\s+(---|\d+\.\d+)\s+(\d+\.\d+)\s+(\d+)")
@@ -75,8 +78,28 @@ def extract_table_from_text(text):
 
 def extract_images_from_pdf(pdf_path):
     """Converts PDF to image"""
-    image = convert_from_path(pdf_path)[0]
-    filename = os.path.splitext(os.path.basename(pdf_path))[0]
-    image_path = os.path.join(IMAGE_DIR, f"{filename}.jpg")
-    image.save(image_path, "JPEG")
-    return image_path
+    # image = convert_from_path(pdf_path)[0]
+    # filename = os.path.splitext(os.path.basename(pdf_path))[0]
+    # image_path = os.path.join(IMAGE_DIR, f"{filename}.jpg")
+    # image.save(image_path, "JPEG")
+    # return image_path
+
+    try:
+        logger.info(f"Starting image extraction from PDF: {pdf_path}")
+
+        # Convert PDF to image
+        image = convert_from_path(pdf_path)[0]
+
+        if not image:
+            logger.warning("No images were extracted from the pdf.")
+            return None
+        
+        # Svae the extracted image
+        filename = os.path.splitext(os.path.basename(pdf_path))[0]
+        image_path = os.path.join(IMAGE_DIR, f"{filename}.jpg")
+        image.save(image_path, "JPEG")
+        logger.info(f"Image extracted and saved: {image_path}")
+        return image_path
+    except Exception as e:
+        logger.error(f"Error extracting image from PDF {pdf_path}: {e}")
+        return None

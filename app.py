@@ -52,7 +52,8 @@ if uploaded_file:
         if df is not None:
             
             logger.info("Table extracted successfully.")
-            table_saved = save_table_to_db(df, table_name=TABLE_NAME)
+            table_saved = save_table_to_db(sample_id, report_generated, df, TABLE_NAME)
+
 
             if table_saved:
                 logger.info("Data saved to the Database")

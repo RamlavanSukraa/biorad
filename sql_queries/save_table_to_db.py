@@ -8,7 +8,7 @@ from utils.logger import app_logger as logger
 import warnings
 warnings.filterwarnings("ignore")  # Suppress all warnings
 
-def save_table_to_db(df, table_name):
+def save_table_to_db(sample_id, report_date, df, table_name):
 
     conn = connect_to_database()
     if conn is None:
@@ -38,18 +38,21 @@ def save_table_to_db(df, table_name):
         # Ensure NULL values remain NULL for SQL insertion
         df = df.replace({np.nan: None})
 
-        # Insert Only Extracted Columns into SQL Server
+        # Insert Data into SQL Server
         for _, row in df.iterrows():
             cursor.execute(
                 f"""
                 INSERT INTO {table_name} 
-                (InRs_Map_code, NGSP, InRs_Result, InRs_Ret_Time, Peak_Area)
-                VALUES (?, ?, ?, ?, ?)
+                (InRs_Machine, InRs_ReqDate, InRs_ReqNo, InRs_Map_code, InRs_Result, InRs_Ret_Time, NGSP, Peak_Area)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, 
+                "D10",  # Default machine name
+                report_date,  # Store report date in InRs_ReqDate
+                sample_id,  # Store Sample ID in InRs_ReqNo
                 row["InRs_Map_code"],  
-                row["NGSP"],           
                 row["InRs_Result"],    
                 row["InRs_Ret_Time"],  
+                row["NGSP"],           
                 row["Peak_Area"]       
             )
 
